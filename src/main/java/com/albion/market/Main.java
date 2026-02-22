@@ -28,15 +28,15 @@ public class Main {
 
         AppConfig config = CliOverrides.apply(AppConfig.load(), args);
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-        SimpleRateLimiter limiter = new SimpleRateLimiter(config.requestsPerSecond());
+        SimpleRateLimiter limiter = new SimpleRateLimiter(config.requestsPerMinute(), config.requestsPerFiveMinutes());
         HttpJsonClient http = new HttpJsonClient(objectMapper, config.maxRetries(), config.requestTimeout(), limiter);
 
         ItemCatalogLoader catalogLoader = new ItemCatalogLoader(http);
         PriceApiService priceApiService = new PriceApiService(http, config.pricesBaseUrl());
         MarketCollectorService marketCollector = new MarketCollectorService(priceApiService);
 
-        log.info("Starting with concurrency={}, cities={}, qualities={}, enchantments={}",
-                config.concurrency(), config.cities(), config.qualities(), config.enchantments());
+        log.info("Starting with concurrency={}, ratePerMinute={}, ratePer5Minutes={}, cities={}, qualities={}, enchantments={}",
+                config.concurrency(), config.requestsPerMinute(), config.requestsPerFiveMinutes(), config.cities(), config.qualities(), config.enchantments());
 
         List<ItemDefinition> items = catalogLoader.load(config.itemCatalogUrl());
         List<PriceRecord> rows = marketCollector.collect(config, items);

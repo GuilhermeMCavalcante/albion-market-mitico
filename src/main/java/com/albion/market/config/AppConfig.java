@@ -20,7 +20,8 @@ public record AppConfig(
         int chunkSize,
         int maxRetries,
         Duration requestTimeout,
-        int requestsPerSecond,
+        int requestsPerMinute,
+        int requestsPerFiveMinutes,
         Path outputCsvPath,
         Path sqliteDbPath,
         Integer sinceMinutes
@@ -44,7 +45,8 @@ public record AppConfig(
                 Integer.parseInt(read(props, "chunk_size", "100")),
                 Integer.parseInt(read(props, "max_retries", "5")),
                 Duration.ofSeconds(Long.parseLong(read(props, "request_timeout_seconds", "30"))),
-                Integer.parseInt(read(props, "requests_per_second", "8")),
+                Integer.parseInt(read(props, "requests_per_minute", "180")),
+                Integer.parseInt(read(props, "requests_per_5_minutes", "300")),
                 Path.of(read(props, "output_csv_path", "./output/prices.csv")),
                 Path.of(read(props, "sqlite_db_path", "./output/prices.db")),
                 readOptionalInt(props, "since_minutes")

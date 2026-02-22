@@ -5,7 +5,6 @@ import com.albion.market.config.AppConfig;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class CliOverrides {
@@ -17,6 +16,8 @@ public final class CliOverrides {
         String qualities = null;
         String enchants = null;
         Integer concurrency = null;
+        Integer ratePerMinute = null;
+        Integer ratePer5Minutes = null;
         String out = null;
         String db = null;
         Integer sinceMinutes = config.sinceMinutes();
@@ -26,6 +27,8 @@ public final class CliOverrides {
             if (arg.startsWith("--qualities=")) qualities = arg.substring("--qualities=".length());
             if (arg.startsWith("--enchantments=")) enchants = arg.substring("--enchantments=".length());
             if (arg.startsWith("--concurrency=")) concurrency = Integer.parseInt(arg.substring("--concurrency=".length()));
+            if (arg.startsWith("--ratePerMinute=")) ratePerMinute = Integer.parseInt(arg.substring("--ratePerMinute=".length()));
+            if (arg.startsWith("--ratePer5Minutes=")) ratePer5Minutes = Integer.parseInt(arg.substring("--ratePer5Minutes=".length()));
             if (arg.startsWith("--out=")) out = arg.substring("--out=".length());
             if (arg.startsWith("--db=")) db = arg.substring("--db=".length());
             if (arg.startsWith("--sinceMinutes=")) sinceMinutes = Integer.parseInt(arg.substring("--sinceMinutes=".length()));
@@ -41,7 +44,8 @@ public final class CliOverrides {
                 config.chunkSize(),
                 config.maxRetries(),
                 config.requestTimeout(),
-                config.requestsPerSecond(),
+                ratePerMinute != null ? ratePerMinute : config.requestsPerMinute(),
+                ratePer5Minutes != null ? ratePer5Minutes : config.requestsPerFiveMinutes(),
                 out != null ? Path.of(out) : config.outputCsvPath(),
                 db != null ? Path.of(db) : config.sqliteDbPath(),
                 sinceMinutes

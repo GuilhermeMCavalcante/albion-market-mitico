@@ -24,7 +24,7 @@ Saídas padrão:
 
 ## Exemplos de comando (CLI)
 ```bash
-mvn -q exec:java -Dexec.args="--cities=Bridgewatch,Martlock --qualities=1,2 --enchantments=0,1,2,3 --concurrency=8 --out=./output/precos.csv --db=./output/precos.db --sinceMinutes=120"
+mvn -q exec:java -Dexec.args="--cities=Bridgewatch,Martlock --qualities=1,2 --enchantments=0,1,2,3 --concurrency=8 --ratePerMinute=180 --ratePer5Minutes=300 --out=./output/precos.csv --db=./output/precos.db --sinceMinutes=120"
 ```
 
 Argumentos suportados:
@@ -32,6 +32,8 @@ Argumentos suportados:
 - `--qualities=1,2,3,4,5`
 - `--enchantments=0,1,2,3`
 - `--concurrency=6`
+- `--ratePerMinute=180`
+- `--ratePer5Minutes=300`
 - `--out=./output/prices.csv`
 - `--db=./output/prices.db`
 - `--sinceMinutes=120` (opcional, filtro local por timestamp mais recente de buy/sell)
@@ -54,9 +56,10 @@ Também é possível sobrescrever por variáveis de ambiente com os mesmos nomes
 
 ## Rate limit e caching
 - O cliente aplica:
-  - limite de requisições por segundo (`requests_per_second`)
+  - limite por minuto (`requests_per_minute`, padrão 180)
+  - limite por 5 minutos (`requests_per_5_minutes`, padrão 300)
   - retry com backoff exponencial para `429` e `5xx`
-- Para cargas muito grandes, ajuste `chunk_size`, `concurrency` e `requests_per_second`.
+- Para cargas muito grandes, ajuste `chunk_size`, `concurrency`, `requests_per_minute` e `requests_per_5_minutes`.
 - Caching não foi habilitado por padrão; recomendável incluir cache local para catálogo e respostas em execuções frequentes.
 
 ## Banco SQLite
