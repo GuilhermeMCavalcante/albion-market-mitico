@@ -84,7 +84,7 @@ public class MarketCollectorService {
                     } catch (Exception e) {
                         failed.addAndGet(chunk.size());
                         log.error("Failed chunk with {} items", chunk.size(), e);
-                        return List.of();
+                        return List.<PriceRecord>of();
                     }
                 }, executor)
         ).toList();
